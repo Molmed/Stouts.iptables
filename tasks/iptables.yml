@@ -11,6 +11,10 @@
   yum:  name=iptables
   when: ansible_os_family == 'RedHat'
 
+- name: Ensure ufw is not installed (debian)
+  apt:  name=ufw state=absent purge=yes
+  when: ansible_os_family == 'Debian'
+
 - name: Ensure that config directory is exists
   file: state=directory path="{{ iptables_confdir }}"
 
@@ -20,4 +24,4 @@
 
 - name: Autoload the rules
   template: src=etc/network/if-up.d/iptables_load.j2 dest={{iptables_load_path}} owner=root group=root mode=751
-  when: iptables_load_path
+  when: iptables_load_path != ""
